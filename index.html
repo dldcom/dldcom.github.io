@@ -1,79 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dldcom 학급 메인 페이지</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>이제윤의 학급 페이지</title>
+  <meta name="description" content="이제윤 선생님의 학급 메인 허브 – 수업용 웹앱과 프로젝트로 바로 이동" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      text-align: center;
-      padding: 50px;
+    /* iOS 스타일 감성: San Francisco 폰트 스택, 큰 타이틀, 카드, 세그먼트 컨트롤 */
+    :root{
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #0b1220;
+      --muted: #667085;
+      --line: #e6eaf2;
+      --primary: #007aff; /* iOS Blue */
+      --tint: #eaf2ff;
+      --shadow: 0 6px 20px rgba(12, 22, 58, .08);
+      --radius: 18px;
     }
-    h1 {
-      color: #333;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font: 500 16px/1.5 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Apple SD Gothic Neo, Noto Sans KR, system-ui, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(60% 40% at 0% 0%, #eef4ff 0%, transparent 60%),
+        radial-gradient(70% 50% at 100% 0%, #f7f5ff 0%, transparent 60%),
+        var(--bg);
     }
-    #repo-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-top: 40px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .repo-item {
-      display: block;
-      padding: 15px;
-      background: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 18px;
-      transition: background 0.3s;
-    }
-    .repo-item:hover {
-      background: #45a049;
-    }
+    .wrap{max-width:980px;margin:0 auto;padding:24px 18px 40px}
+    .nav{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(12px);background:rgba(245,247,251,.75);border-bottom:1px solid var(--line);z-index:20}
+    .navin{max-width:980px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px}
+    .title{font-size:26px;font-weight:800;letter-spacing:-.3px}
+    .subtitle{color:var(--muted);font-weight:600}
+
+    .hero{margin-top:18px;background:linear-gradient(180deg,#ffffff, #f7faff);border:1px solid var(--line);border-radius:28px;padding:22px 20px;box-shadow:var(--shadow)}
+    .hero h1{margin:0 0 6px 0;font-size:28px;font-weight:800;letter-spacing:-.3px}
+    .hero p{margin:0;color:var(--muted);font-weight:600}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 10px}
+    .seg{display:inline-flex;background:#f0f4fa;border:1px solid var(--line);border-radius:999px;padding:4px}
+    .seg button{border:0;background:transparent;padding:8px 14px;border-radius:999px;font-weight:700;color:#4b5563;cursor:pointer}
+    .seg button.active{background:var(--card);color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.04)}
+    .search{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 12px;box-shadow:0 2px 8px rgba(12,22,58,.05)}
+    .search input{border:0;outline:0;flex:1;font:inherit;background:transparent}
+    .btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn.tint{background:var(--tint);border-color:#d6e6ff;color:#0b5ad6}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:12px}
+    @media(min-width:820px){.grid{grid-template-columns:1fr 1fr}}
+
+    .card{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);transition:transform .2s ease, box-shadow .2s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(12,22,58,.12)}
+    .icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#f3f7ff;border:1px solid #e0e9ff;font-size:22px}
+    .meta{flex:1}
+    .meta h3{margin:0 0 4px 0;font-size:18px;font-weight:800;letter-spacing:-.2px}
+    .desc{margin:0;color:var(--muted);font-weight:600}
+    .pill{margin-top:10px;display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:#f6f8fc;padding:6px 10px;border-radius:999px;color:#475569;font-weight:700;font-size:12px}
+    .go{margin-left:auto;align-self:center}
+    .go a{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid #dfe6f4;background:linear-gradient(#fefefe,#f8fbff);text-decoration:none;color:#0b5ad6;font-weight:800}
+
+    .empty,.error{display:grid;place-items:center;border:1px dashed var(--line);border-radius:var(--radius);padding:28px;color:var(--muted);background:#fbfcfe}
+    .skeleton{height:92px;border-radius:var(--radius);background:linear-gradient(90deg,#f4f6fb 25%,#eef2f8 37%,#f4f6fb 63%);background-size:400% 100%;animation:shimmer 1.3s infinite}
+    @keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+
+    footer{margin-top:22px;color:var(--muted);font-size:12px;text-align:center}
   </style>
 </head>
 <body>
-  <h1>📚 dldcom 학급 페이지</h1>
-  <p>아래에서 원하는 프로그램을 선택하세요</p>
-
-  <div id="repo-list">
-    <p>로딩 중...</p>
+  <div class="nav">
+    <div class="navin">
+      <div>
+        <div class="title">이제윤의 학급 페이지</div>
+        <div class="subtitle">수업용 웹앱 · 게임 · 설문 바로가기</div>
+      </div>
+      <button class="btn tint" id="refresh">새로고침</button>
+    </div>
   </div>
 
-  <footer style="margin-top: 50px; color: #777;">
-    &copy; 2025 dldcom.com
-  </footer>
+  <div class="wrap">
+    <div class="hero">
+      <h1>안녕하세요 👋</h1>
+      <p>아래 목록은 GitHub 공개 저장소를 자동으로 불러와 구성됩니다. 새 프로젝트를 만들면 여기에도 자동으로 나타나요.</p>
+      <div class="toolbar">
+        <div class="seg" role="tablist" aria-label="정렬">
+          <button class="active" id="sort-name" aria-selected="true">이름순</button>
+          <button id="sort-updated" aria-selected="false">최근 업데이트</button>
+        </div>
+        <div class="search" role="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.2-4.2" stroke="#667085" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#667085" stroke-width="2"/></svg>
+          <input id="q" placeholder="검색 (프로젝트 이름/설명)" aria-label="검색" />
+        </div>
+      </div>
+    </div>
 
-  <script>
-    const username = "dldcom";
-    const rootDomain = "https://dldcom.com/";
+    <div id="list" class="grid" aria-live="polite" aria-busy="true">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
 
-    fetch(`https://api.github.com/users/${username}/repos`)
-      .then(res => res.json())
-      .then(data => {
-        const repoList = document.getElementById("repo-list");
-        repoList.innerHTML = "";
+    <footer>© 2025 이제윤의 학급 페이지 · GitHub Pages 자동 목록</footer>
+  </div>
 
-        data
-          .filter(repo => repo.name !== `${username}.github.io`)
-          .forEach(repo => {
-            const link = document.createElement("a");
-            link.href = rootDomain + repo.name + "/";
-            link.className = "repo-item";
-            link.textContent = `📂 ${repo.name}`;
-            repoList.appendChild(link);
-          });
+<script>
+(function(){
+  const username = 'dldcom';
+  const rootDomain = 'https://dldcom.com/'; // 2번(경로 방식)
+
+  const listEl = document.getElementById('list');
+  const qEl = document.getElementById('q');
+  const sortNameBtn = document.getElementById('sort-name');
+  const sortUpdatedBtn = document.getElementById('sort-updated');
+  const refreshBtn = document.getElementById('refresh');
+
+  let repos = [];
+  let sortMode = 'name';
+  let keyword = '';
+
+  function iconFor(name){
+    const n = name.toLowerCase();
+    if(n.includes('survey')||n.includes('form')||n.includes('quiz')) return '📝';
+    if(n.includes('game')||n.includes('play')||n.includes('runner')||n.includes('trex')) return '🎮';
+    if(n.includes('math')||n.includes('calc')) return '➗';
+    if(n.includes('science')||n.includes('phy')||n.includes('chem')) return '🧪';
+    if(n.includes('history')||n.includes('social')) return '🏛️';
+    return '📦';
+  }
+
+  function fmtDate(iso){
+    try{ const d = new Date(iso); return d.toLocaleDateString('ko-KR',{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return '' }
+  }
+
+  function render(){
+    listEl.setAttribute('aria-busy','true');
+    listEl.innerHTML = '';
+    const filtered = repos
+      .filter(r=>!r.archived && !r.fork && r.name !== `${username}.github.io`)
+      .filter(r=>{
+        if(!keyword) return true;
+        const q = keyword.toLowerCase();
+        return r.name.toLowerCase().includes(q) || (r.description||'').toLowerCase().includes(q);
       })
-      .catch(err => {
-        document.getElementById("repo-list").innerHTML = "<p>저장소 목록을 불러오지 못했습니다.</p>";
-        console.error(err);
+      .sort((a,b)=>{
+        if(sortMode==='updated') return new Date(b.pushed_at)-new Date(a.pushed_at);
+        return a.name.localeCompare(b.name, 'ko');
       });
-  </script>
+
+    if(!filtered.length){
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = '표시할 프로젝트가 없습니다.';
+      listEl.appendChild(empty);
+      listEl.removeAttribute('aria-busy');
+      return;
+    }
+
+    for(const r of filtered){
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="icon">${iconFor(r.name)}</div>
+        <div class="meta">
+          <h3>${r.name}</h3>
+          <p class="desc">${(r.description||'설명이 없습니다.').replace(/</g,'&lt;')}</p>
+          <span class="pill">업데이트 · ${fmtDate(r.pushed_at)}</span>
+        </div>
+        <div class="go"><a href="${rootDomain + r.name + '/'}" aria-label="${r.name} 열기">열기 →</a></div>
+      `;
+      listEl.appendChild(card);
+    }
+    listEl.removeAttribute('aria-busy');
+  }
+
+  async function load(){
+    listEl.setAttribute('aria-busy','true');
+    listEl.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+    const url = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
+    try{
+      const res = await fetch(url, {headers:{'Accept':'application/vnd.github+json'}});
+      const data = await res.json();
+      if(!Array.isArray(data)) throw new Error('unexpected');
+      repos = data;
+      render();
+    }catch(e){
+      listEl.innerHTML = '<div class="error">목록을 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.</div>';
+    }
+  }
+
+  qEl.addEventListener('input', (e)=>{ keyword = e.target.value.trim(); render(); });
+  sortNameBtn.addEventListener('click', ()=>{ sortMode='name'; sortNameBtn.classList.add('active'); sortUpdatedBtn.classList.remove('active'); render(); });
+  sortUpdatedBtn.addEventListener('click', ()=>{ sortMode='updated'; sortUpdatedBtn.classList.add('active'); sortNameBtn.classList.remove('active'); render(); });
+  refreshBtn.addEventListener('click', load);
+
+  load();
+})();
+</script>
 </body>
 </html>
