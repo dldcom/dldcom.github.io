@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dldcom 학급 메인 페이지</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    #repo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 40px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .repo-item {
+      display: block;
+      padding: 15px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      transition: background 0.3s;
+    }
+    .repo-item:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 dldcom 학급 페이지</h1>
+  <p>아래에서 원하는 프로그램을 선택하세요</p>
+
+  <div id="repo-list">
+    <p>로딩 중...</p>
+  </div>
+
+  <footer style="margin-top: 50px; color: #777;">
+    &copy; 2025 dldcom.com
+  </footer>
+
+  <script>
+    const username = "dldcom";
+    const rootDomain = "https://dldcom.com/";
+
+    fetch(`https://api.github.com/users/${username}/repos`)
+      .then(res => res.json())
+      .then(data => {
+        const repoList = document.getElementById("repo-list");
+        repoList.innerHTML = "";
+
+        data
+          .filter(repo => repo.name !== `${username}.github.io`)
+          .forEach(repo => {
+            const link = document.createElement("a");
+            link.href = rootDomain + repo.name + "/";
+            link.className = "repo-item";
+            link.textContent = `📂 ${repo.name}`;
+            repoList.appendChild(link);
+          });
+      })
+      .catch(err => {
+        document.getElementById("repo-list").innerHTML = "<p>저장소 목록을 불러오지 못했습니다.</p>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
